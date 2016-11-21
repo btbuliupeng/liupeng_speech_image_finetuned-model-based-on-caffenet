@@ -1,0 +1,74 @@
+# Load the net, list its data and params, and filter an example image.
+caffe.set_mode_cpu()
+net = caffe.Net('net_surgery/conv.prototxt', caffe.TEST)
+print("blobs {}\nparams {}".format(net.blobs.keys(), net.params.keys()))
+
+# load image and prepare as a single input batch for Caffe
+im = np.array(caffe.io.load_image('images/cat_gray.jpg', color=False)).squeeze()
+plt.title("original image")
+plt.imshow(im)
+plt.axis('off')
+
+im_input = im[np.newaxis, np.newaxis, :, :]
+net.blobs['data'].reshape(*im_input.shape)
+net.blobs['data'].data[...] = im_input
+blobs ['data', 'conv']
+params ['conv']
+
+
+
+
+net.set_channel_swap('data',(2,1,0))
+net.set_input_scale('data',255)
+scores=net.predict([caffe.io.load_image('/home/liupeng/Desktop/caffe-master/examples/images/cat.jpg')])
+
+
+
+# Load the net, list its data and params, and filter an example image.
+caffe.set_mode_gpu()
+net = caffe.Net('net_surgery/conv.prototxt', caffe.TEST)
+print("blobs {}\nparams {}".format(net.blobs.keys(), net.params.keys()))
+
+# load image and prepare as a single input batch for Caffe
+im = np.array(caffe.io.load_image('test/12.jpg', color=False)).squeeze()
+plt.title("original image")
+plt.imshow(im)
+plt.axis('off')
+
+im_input = im[np.newaxis, np.newaxis, :, :]
+net.blobs['data'].reshape(*im_input.shape)
+net.blobs['data'].data[...] = im_input
+blobs ['data', 'conv']
+params ['conv']
+
+
+# Load the net, list its data and params, and filter an example image.
+caffe.set_mode_cpu()
+net = caffe.Net(caffe_root+'/examples/net_surgery/conv.prototxt', caffe.TEST)
+print("blobs {}\nparams {}".format(net.blobs.keys(), net.params.keys()))
+
+# load image and prepare as a single input batch for Caffe
+im = np.array(caffe.io.load_image(caffe_root+'/examples/images/cat_gray.jpg', color=False)).squeeze()
+plt.title("original image")
+plt.imshow(im)
+plt.axis('off')
+
+im_input = im[np.newaxis, np.newaxis, :, :]
+net.blobs['data'].reshape(*im_input.shape)
+net.blobs['data'].data[...] = im_input
+
+
+def show_filters(net):
+    net.forward()
+    plt.figure()
+    filt_min, filt_max = net.blobs['conv'].data.min(), net.blobs['conv'].data.max()
+    for i in range(3):
+        plt.subplot(1,4,i+2)
+        plt.title("filter #{} output".format(i))
+        plt.imshow(net.blobs['conv'].data[0, i], vmin=filt_min, vmax=filt_max)
+        plt.tight_layout()
+        plt.axis('off')
+
+# filter the image with initial 
+show_filters(net)
+
